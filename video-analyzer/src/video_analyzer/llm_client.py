@@ -75,12 +75,11 @@ class LLMClient:
             text = next(b.text for b in response.content if b.type == "text")
             return json.loads(text)
 
-        response = self.client.responses.create(
-            model=self.model,
-            instructions=system,
-            input=[{"role": "user", "content": _to_openai_content(content)}],
-            max_output_tokens=max_tokens,
-            text={
+        request: dict[str, Any] = {
+            "model": self.model,
+            "input": [{"role": "user", "content": _to_openai_content(content)}],
+            "max_output_tokens": max_tokens,
+            "text": {
                 "format": {
                     "type": "json_schema",
                     "name": schema_name,
@@ -88,7 +87,10 @@ class LLMClient:
                     "strict": True,
                 }
             },
-        )
+        }
+        if system is not None:
+            request["instructions"] = system
+        response = self.client.responses.create(**request)
         self._track(response.usage)
         return json.loads(response.output_text)
 
@@ -109,12 +111,14 @@ class LLMClient:
             self._track(response.usage)
             return "".join(b.text for b in response.content if b.type == "text")
 
-        response = self.client.responses.create(
-            model=self.model,
-            instructions=system,
-            input=[{"role": "user", "content": _to_openai_content(content)}],
-            max_output_tokens=max_tokens,
-        )
+        request: dict[str, Any] = {
+            "model": self.model,
+            "input": [{"role": "user", "content": _to_openai_content(content)}],
+            "max_output_tokens": max_tokens,
+        }
+        if system is not None:
+            request["instructions"] = system
+        response = self.client.responses.create(**request)
         self._track(response.usage)
         return response.output_text
 
