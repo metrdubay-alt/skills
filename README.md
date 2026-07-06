@@ -24,6 +24,10 @@ One top-level folder is one Codex skill. Do not group skills into nested categor
 
 - `po` - Prompt Optimizer. Generates three optimized prompts for a user request.
 
+### Video
+
+- `video-analyzer` - Converts videos into Markdown and JSON using local transcription, scene detection, and OpenAI/Anthropic vision models.
+
 ## Install a skill
 
 Clone this repository, then copy or symlink a skill folder into your Codex skills directory.

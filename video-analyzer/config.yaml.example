@@ -1,0 +1,32 @@
+# Скопируйте в config.yaml и настройте под себя.
+
+# LLM-провайдер для vision и генерации документа: openai | anthropic
+provider: openai
+
+# Модель провайдера.
+# OpenAI: gpt-5.5 или другая vision-capable модель с structured outputs.
+# Anthropic: claude-sonnet-5 / claude-haiku-4-5 и т.п.
+model: gpt-5.5
+
+# Язык итогового документа: ru | en
+doc_language: ru
+
+# ASR
+whisper:
+  model: large-v3          # large-v3 | medium | small
+  device: auto             # auto | cuda | cpu
+  language: null           # null = авто-детекция, либо "ru" / "en"
+
+# Детекция сцен
+scenes:
+  threshold: 27.0          # порог ContentDetector, меньше = больше сцен
+  max_frame_interval: 20.0 # для длинных сцен — доп. кадр каждые N секунд
+  phash_distance: 6        # hamming-дистанция для дедупа кадров
+
+# Vision
+vision:
+  batch_size: 5            # кадров на один вызов LLM
+  max_frame_width: 1568    # ресайз кадров перед отправкой
+
+# Куда складывать результаты
+output_dir: output
