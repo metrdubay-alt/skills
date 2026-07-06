@@ -1,6 +1,6 @@
 ---
 name: video-analyzer
-description: Analyze long videos into Markdown and JSON using local Whisper transcription, scene/frame extraction, and an LLM vision provider. Use when Codex needs to run, modify, or explain the bundled video-analyzer Python project, especially for OpenAI or Anthropic API-backed multimodal video analysis.
+description: Use when the user asks to analyze a video, runs /va with a YouTube URL or local video path, or needs to run, modify, or explain the bundled OpenAI/Anthropic video-analyzer Python project.
 ---
 
 # Video Analyzer
@@ -25,6 +25,24 @@ video-analyzer/
 
 Read `HANDOVER.md` for architecture and operational details.
 
+## Codex Shortcut
+
+When the user writes:
+
+```text
+/va <YouTube URL or local video path>
+```
+
+Run the analyzer from this skill folder with the local virtual environment:
+
+```powershell
+cd "C:\Users\User\Documents\New project\skills\video-analyzer"
+.\.venv\Scripts\python.exe -m video_analyzer "<source>" --doc-lang ru
+```
+
+Replace `<source>` with the text after `/va`. Do not ask for API keys in chat; use the local `.env`.
+If the run completes, report the generated `document.md` path. If it fails, summarize the error and the next fix.
+
 ## Provider
 
 The project supports:
@@ -46,4 +64,3 @@ copy config.yaml.example config.yaml
 ```
 
 On Linux/WSL, use `.venv/bin/python` and `.venv/bin/pip`.
-
