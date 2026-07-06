@@ -20,7 +20,15 @@ STAGES = [
 ]
 
 
+def _prefer_utf8_output() -> None:
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is not None:
+            reconfigure(encoding="utf-8", errors="replace")
+
+
 def main() -> int:
+    _prefer_utf8_output()
     parser = argparse.ArgumentParser(
         prog="video-analyzer",
         description="Анализ видео: транскрипция + сцены + LLM vision -> детальный документ",
