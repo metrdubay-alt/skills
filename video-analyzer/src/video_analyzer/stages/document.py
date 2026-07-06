@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from ..llm_client import LLMClient
+from ..docx_export import markdown_to_docx
 from ..pipeline import read_json, write_json
 
 log = logging.getLogger("video_analyzer")
@@ -85,6 +86,7 @@ def run(workdir: Path, config: dict[str, Any]) -> None:
     document = body + "\n".join(appendix_lines) + "\n"
 
     (workdir / "document.md").write_text(document, encoding="utf-8")
+    markdown_to_docx(document, workdir / "document.docx")
     write_json(workdir / "analysis.json", {
         "video_id": meta["video_id"],
         "source": meta["source"],
