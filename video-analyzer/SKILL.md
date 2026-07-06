@@ -36,12 +36,12 @@ When the user writes:
 Run the analyzer from this skill folder with the local virtual environment:
 
 ```powershell
-cd "C:\Users\User\Documents\New project\skills\video-analyzer"
+cd "<installed video-analyzer skill folder>"
 .\.venv\Scripts\python.exe -m video_analyzer "<source>" --doc-lang ru
 ```
 
 Replace `<source>` with the text after `/va`. Do not ask for API keys in chat; use the local `.env`.
-If the run completes, report the generated `document.md` path. If it fails, summarize the error and the next fix.
+If the run completes, report the generated `document.md` and `document.docx` paths plus the final LLM usage summary and elapsed processing time. If it fails, summarize the error and the next fix.
 
 ## Provider
 

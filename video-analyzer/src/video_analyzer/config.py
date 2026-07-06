@@ -12,8 +12,8 @@ DEFAULTS: dict[str, Any] = {
     "provider": "openai",
     "model": "gpt-5.5",
     "doc_language": "ru",
-    "whisper": {"model": "large-v3", "device": "auto", "language": None, "vad_filter": False},
-    "scenes": {"threshold": 27.0, "max_frame_interval": 20.0, "phash_distance": 6},
+    "whisper": {"model": "tiny", "device": "cpu", "language": None, "vad_filter": False},
+    "scenes": {"detect": False, "threshold": 27.0, "max_frame_interval": 20.0, "phash_distance": 6},
     "vision": {"batch_size": 5, "max_frame_width": 1568},
     "output_dir": "output",
 }

@@ -5,7 +5,9 @@
 from __future__ import annotations
 
 import json
+import os
 import re
+import shutil
 import subprocess
 from pathlib import Path
 from typing import Any
@@ -34,10 +36,25 @@ def sanitize_id(raw: str) -> str:
     return re.sub(r"[^\w\-]+", "_", raw).strip("_") or "video"
 
 
+def _resolve_tool(name: str) -> str:
+    found = shutil.which(name)
+    if found:
+        return found
+
+    local_app_data = os.environ.get("LOCALAPPDATA")
+    if local_app_data:
+        packages = Path(local_app_data) / "Microsoft" / "WinGet" / "Packages"
+        for candidate in packages.glob(f"Gyan.FFmpeg_*/*/bin/{name}.exe"):
+            if candidate.exists():
+                return str(candidate)
+
+    return name
+
+
 def ffprobe_meta(video_path: Path) -> dict[str, Any]:
     result = subprocess.run(
         [
-            "ffprobe", "-v", "quiet", "-print_format", "json",
+            _resolve_tool("ffprobe"), "-v", "quiet", "-print_format", "json",
             "-show_format", "-show_streams", str(video_path),
         ],
         capture_output=True, text=True, check=True, encoding="utf-8",
@@ -48,7 +65,7 @@ def ffprobe_meta(video_path: Path) -> dict[str, Any]:
 def extract_audio(video_path: Path, audio_path: Path) -> None:
     subprocess.run(
         [
-            "ffmpeg", "-y", "-v", "error", "-i", str(video_path),
+            _resolve_tool("ffmpeg"), "-y", "-v", "error", "-i", str(video_path),
             "-vn", "-ac", "1", "-ar", "16000", "-f", "wav", str(audio_path),
         ],
         check=True,
@@ -58,10 +75,12 @@ def extract_audio(video_path: Path, audio_path: Path) -> None:
 def _download(source: str, workdir: Path) -> tuple[Path, dict[str, Any]]:
     import yt_dlp
 
+    ffmpeg = Path(_resolve_tool("ffmpeg"))
     opts = {
         "format": "bestvideo[height<=1080]+bestaudio/best[height<=1080]/best",
         "outtmpl": str(workdir / "video.%(ext)s"),
         "merge_output_format": "mp4",
+        "ffmpeg_location": str(ffmpeg.parent),
         "writesubtitles": False,
         "writeautomaticsub": False,
         "quiet": True,

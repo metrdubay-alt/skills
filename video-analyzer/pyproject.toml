@@ -6,7 +6,7 @@ requires-python = ">=3.11"
 dependencies = [
     "yt-dlp",
     "faster-whisper",
-    "ctranslate2==4.6.0",
+    "ctranslate2>=4.6.1,<5",
     "setuptools<81",
     "scenedetect[opencv]",
     "opencv-python",

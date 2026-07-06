@@ -1,11 +1,16 @@
 import sys
 import types
+from pathlib import Path
 
-from video_analyzer.stages.ingest import _download
+from video_analyzer.stages.ingest import _download, _resolve_tool
 
 
 def test_download_does_not_request_subtitles(monkeypatch, tmp_path):
     captured = {}
+    monkeypatch.setattr(
+        "video_analyzer.stages.ingest._resolve_tool",
+        lambda name: f"C:/tools/{name}.exe",
+    )
 
     class FakeYoutubeDL:
         def __init__(self, opts):
@@ -31,3 +36,24 @@ def test_download_does_not_request_subtitles(monkeypatch, tmp_path):
 
     assert captured["writesubtitles"] is False
     assert captured["writeautomaticsub"] is False
+    assert Path(captured["ffmpeg_location"]) == Path("C:/tools")
+
+
+def test_resolve_tool_falls_back_to_winget_ffmpeg(monkeypatch, tmp_path):
+    monkeypatch.setattr("shutil.which", lambda _name: None)
+    monkeypatch.setenv("LOCALAPPDATA", str(tmp_path))
+
+    ffmpeg = (
+        tmp_path
+        / "Microsoft"
+        / "WinGet"
+        / "Packages"
+        / "Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe"
+        / "ffmpeg-8.1.2-full_build"
+        / "bin"
+        / "ffmpeg.exe"
+    )
+    ffmpeg.parent.mkdir(parents=True)
+    ffmpeg.write_text("")
+
+    assert _resolve_tool("ffmpeg") == str(ffmpeg)

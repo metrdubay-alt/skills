@@ -1,7 +1,7 @@
 """Тесты чистой логики этапа scenes: выбор таймстампов кадров и дедуп по phash."""
 import pytest
 
-from video_analyzer.stages.scenes import frame_timestamps, dedupe_hashes
+from video_analyzer.stages.scenes import frame_timestamps, dedupe_hashes, scene_boundaries
 
 
 class TestFrameTimestamps:
@@ -20,6 +20,13 @@ class TestFrameTimestamps:
 
     def test_zero_length_scene_returns_start(self):
         assert frame_timestamps(5.0, 5.0, max_interval=20.0) == [5.0]
+
+
+class TestSceneBoundaries:
+    def test_detection_disabled_uses_single_full_video_scene(self):
+        boundaries = scene_boundaries("video.mp4", {"detect": False, "threshold": 27.0}, 123.4)
+
+        assert boundaries == [(0.0, 123.4)]
 
 
 class TestDedupeHashes:

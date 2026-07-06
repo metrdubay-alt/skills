@@ -7,14 +7,9 @@ import logging
 from pathlib import Path
 from typing import Any
 
-log = logging.getLogger("video_analyzer")
+from .usage_tracker import SESSION_USAGE, price_for
 
-# USD per 1M tokens (input, output). Unknown models report cost as None.
-PRICES = {
-    "claude-sonnet-5": (3.0, 15.0),
-    "claude-opus-4-8": (5.0, 25.0),
-    "claude-haiku-4-5": (1.0, 5.0),
-}
+log = logging.getLogger("video_analyzer")
 
 
 class LLMClient:
@@ -37,15 +32,24 @@ class LLMClient:
         else:
             raise ValueError(f"Unsupported LLM provider: {provider}")
 
-    def _track(self, usage: Any) -> None:
+    def _track(self, usage: Any, operation: str) -> None:
         if not usage:
             return
-        self.input_tokens += int(getattr(usage, "input_tokens", 0) or 0)
-        self.output_tokens += int(getattr(usage, "output_tokens", 0) or 0)
+        input_tokens = int(getattr(usage, "input_tokens", 0) or 0)
+        output_tokens = int(getattr(usage, "output_tokens", 0) or 0)
+        self.input_tokens += input_tokens
+        self.output_tokens += output_tokens
+        SESSION_USAGE.record(
+            provider=self.provider,
+            model=self.model,
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
+            operation=operation,
+        )
 
     @property
     def cost_usd(self) -> float | None:
-        prices = PRICES.get(self.model)
+        prices = price_for(self.provider, self.model)
         if not prices:
             return None
         in_price, out_price = prices
@@ -71,7 +75,7 @@ class LLMClient:
                 messages=[{"role": "user", "content": content}],
                 output_config={"format": {"type": "json_schema", "schema": schema}},
             )
-            self._track(response.usage)
+            self._track(response.usage, "structured")
             text = next(b.text for b in response.content if b.type == "text")
             return json.loads(text)
 
@@ -91,7 +95,7 @@ class LLMClient:
         if system is not None:
             request["instructions"] = system
         response = self.client.responses.create(**request)
-        self._track(response.usage)
+        self._track(response.usage, "structured")
         return json.loads(response.output_text)
 
     def generate(
@@ -108,7 +112,7 @@ class LLMClient:
                 messages=[{"role": "user", "content": content}],
             ) as stream:
                 response = stream.get_final_message()
-            self._track(response.usage)
+            self._track(response.usage, "generate")
             return "".join(b.text for b in response.content if b.type == "text")
 
         request: dict[str, Any] = {
@@ -119,7 +123,7 @@ class LLMClient:
         if system is not None:
             request["instructions"] = system
         response = self.client.responses.create(**request)
-        self._track(response.usage)
+        self._track(response.usage, "generate")
         return response.output_text
 
 

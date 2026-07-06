@@ -3,6 +3,7 @@ import types
 from types import SimpleNamespace
 
 from video_analyzer.llm_client import LLMClient
+from video_analyzer.usage_tracker import SESSION_USAGE, reset_session_usage
 
 
 class _FakeResponses:
@@ -27,6 +28,7 @@ class _FakeOpenAI:
 
 
 def test_openai_structured_omits_empty_instructions(monkeypatch):
+    reset_session_usage()
     monkeypatch.setitem(
         sys.modules,
         "openai",
@@ -68,3 +70,4 @@ def test_openai_structured_omits_empty_instructions(monkeypatch):
     }
     assert client.input_tokens == 12
     assert client.output_tokens == 3
+    assert SESSION_USAGE.summary()["total_requests"] == 1
