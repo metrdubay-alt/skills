@@ -16,6 +16,7 @@ whisper:
   model: large-v3          # large-v3 | medium | small
   device: auto             # auto | cuda | cpu
   language: null           # null = авто-детекция, либо "ru" / "en"
+  vad_filter: false        # true требует рабочий onnxruntime; false стабильнее на Windows
 
 # Детекция сцен
 scenes:

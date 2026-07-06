@@ -60,7 +60,7 @@ def run(workdir: Path, config: dict[str, Any]) -> None:
         str(workdir / "audio.wav"),
         language=wcfg.get("language"),
         word_timestamps=False,
-        vad_filter=True,
+        vad_filter=bool(wcfg.get("vad_filter", False)),
     )
 
     segments = [

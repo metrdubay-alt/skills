@@ -62,10 +62,8 @@ def _download(source: str, workdir: Path) -> tuple[Path, dict[str, Any]]:
         "format": "bestvideo[height<=1080]+bestaudio/best[height<=1080]/best",
         "outtmpl": str(workdir / "video.%(ext)s"),
         "merge_output_format": "mp4",
-        "writesubtitles": True,
-        "writeautomaticsub": True,
-        "subtitleslangs": ["ru", "en"],
-        "subtitlesformat": "vtt",
+        "writesubtitles": False,
+        "writeautomaticsub": False,
         "quiet": True,
         "noprogress": True,
     }
