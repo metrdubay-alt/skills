@@ -33,6 +33,14 @@ One top-level folder is one Codex skill. Do not group skills into nested categor
 
 - `reasoning-personas` - Activates multi-persona reasoning modes such as `/rp`, Gonzo Truth-Seeker, Devil's Advocate, Pattern Hunter, and Integrator.
 
+### Legal
+
+- `chip-legal-web-rf` - Drafts and reviews a public-clean Russian website legal pack: offers, privacy and personal-data policies, consent checkboxes, cookies, advertising consent, subscriptions, and product addenda. Use it before publishing a Russian-facing website or service. It needs public product facts, not credentials or private client data, and does not replace case-specific legal advice.
+
+### Planning
+
+- `chip-supergoal` - Creates a verified, plan-only `.supergoal` package for non-trivial software work, including roadmap, state, phase specifications, and review gates, then hands execution off explicitly through `/goal`. It plans the work but does not implement it.
+
 ### Design and frontend
 
 - `design-md` - Creates and validates `DESIGN.md` design-system specifications.
@@ -53,6 +61,10 @@ One top-level folder is one Codex skill. Do not group skills into nested categor
 ### Video
 
 - `video-analyzer` - Converts videos into Markdown and JSON using local transcription, scene detection, and OpenAI/Anthropic vision models.
+
+### Server operations
+
+- `server-doctor` - Provides public-safe diagnosis and repair patterns for Hermes Agent, OpenClaw, Telegram gateways, services, providers, sessions, and small server fleets. Use it for incidents, health checks, maintained-fork updates, deployment verification, and postmortems. Keep credentials, host inventories, and private topology in a separate protected SSOT, never in this repository.
 
 ## Install a skill
 
