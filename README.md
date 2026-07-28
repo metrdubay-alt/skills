@@ -29,6 +29,10 @@ One top-level folder is one Codex skill. Do not group skills into nested categor
 
 - `po` - Prompt Optimizer. Generates three optimized prompts for a user request.
 
+### Skill authoring
+
+- `create-skill` - Builds, evaluates, compares, or refactors reusable skill packages with explicit triggers, output contracts, guardrails, tests, and done criteria. Use `/create-skill extract`, `interview`, `refactor`, or `compare`; its implementation commands are Hermes-oriented, while the package remains useful as a Codex authoring workflow.
+
 ### Reasoning
 
 - `reasoning-personas` - Activates multi-persona reasoning modes such as `/rp`, Gonzo Truth-Seeker, Devil's Advocate, Pattern Hunter, and Integrator.
@@ -57,6 +61,11 @@ One top-level folder is one Codex skill. Do not group skills into nested categor
 
 - `deploy-to-vercel` - Creates Vercel preview deployments; production requires an explicit request.
 - `vercel-cli-with-tokens` - Uses Vercel CLI safely with environment-based token authentication.
+- `chip-webb` - Guides production website architecture, Supabase/auth/account flows, protected media, exact-commit deployment, rollback, and smoke verification. Use it for production-facing web work; keep secrets in environment stores and require runtime evidence before claiming a release complete.
+
+### Search and AI discovery
+
+- `seo-aeo-geo-principal` - Audits public sites for SEO, answer-engine readiness, AI discovery, entity authority, structured data, and residual measurement gaps. Use it for evidence-backed SEO/AEO/GEO work; live crawling requires Python plus `beautifulsoup4` and `requests`, and credentials are not used by default.
 
 ### Video
 
